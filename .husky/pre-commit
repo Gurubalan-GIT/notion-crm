@@ -1,0 +1,32 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo '🏗️👷 Styling, testing and building your project before committing'
+
+yarn check-format ||
+(
+    echo '❌ Prettier Check Failed. Run yarn format, add changes and try commit again.';
+    false;
+)
+
+yarn check-lint ||
+(
+        echo '❌ ESLint Check Failed. Make the required changes listed above, add changes and try to commit again.'
+        false; 
+)
+
+yarn check-types ||
+(
+    echo '❌ Are you seriously trying to write that? Make the changes required above.'
+    false;
+)
+
+echo 'Trying to build now.'
+
+yarn build ||
+(
+    echo '❌ Next build failed: View the errors above to see why.'
+    false;
+)
+
+echo '✅ All checks passed, commiting changes.'
