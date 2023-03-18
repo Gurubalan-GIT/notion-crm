@@ -28,7 +28,7 @@
       "@modules/*": ["modules/*"],
       "@common/*": ["common/*"],
       "@styles/*": ["styles/*"],
-      "@vectors/*": ["public/assets/vectors/*"]
+      "@rematch-notion/*": ["rematch/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
