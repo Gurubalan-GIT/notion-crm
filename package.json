@@ -15,12 +15,17 @@
     "test-all": "yarn lint && yarn check-format && yarn check-lint && yarn check-types && yarn build --debug"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.0.1",
     "@notionhq/client": "^2.2.3",
+    "@rematch/core": "^2.2.0",
     "@types/node": "18.15.3",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
+    "@types/react-redux": "^7.1.25",
+    "@types/react-resizable": "^3.0.3",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",
+    "antd": "^5.3.1",
     "autoprefixer": "^10.4.14",
     "classnames": "^2.3.2",
     "eslint": "8.36.0",
@@ -33,6 +38,10 @@
     "prettier": "^2.8.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-drag-listview": "^2.0.0",
+    "react-redux": "^8.0.5",
+    "react-resizable": "^3.0.4",
+    "redux": "^4.2.1",
     "sass": "^1.59.3",
     "tailwindcss": "^3.2.7",
     "typescript": "5.0.2"
