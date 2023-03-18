@@ -1,3 +1,16 @@
 {
-  "extends": "next/core-web-vitals"
+  "plugins": ["sonarjs"],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:import/typescript",
+    "google",
+    "prettier"
+  ],
+  "rules": {
+    "require-jsdoc": "off",
+    "react/react-in-jsx-scope": "off",
+    "@next/next/no-img-element": "off",
+    "sonarjs/cognitive-complexity": "warn",
+    "sonarjs/no-identical-expressions": "error"
+  }
 }

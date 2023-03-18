@@ -1,6 +1,20 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-}
 
-module.exports = nextConfig
+module.exports = {
+  reactStrictMode: true,
+  experimental: {
+    fontLoaders: [
+      { loader: "@next/font/google", options: { subsets: ["latin"] } },
+    ],
+  },
+  poweredByHeader: false,
+  async redirects() {
+    return [
+      {
+        source: "/:slug*.php",
+        destination: "/no-php",
+        permanent: true,
+      },
+    ];
+  },
+};
