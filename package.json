@@ -6,17 +6,38 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prepare": "husky install",
+    "check-types": "tsc --pretty --noEmit",
+    "check-format": "prettier --check .",
+    "check-lint": "eslint . --ext ts --ext tsx --ext js",
+    "format": "prettier --write .",
+    "test-all": "yarn lint && yarn check-format && yarn check-lint && yarn check-types && yarn build --debug"
   },
   "dependencies": {
+    "@notionhq/client": "^2.2.3",
     "@types/node": "18.15.3",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "autoprefixer": "^10.4.14",
+    "classnames": "^2.3.2",
     "eslint": "8.36.0",
+    "eslint-config-google": "^0.14.0",
     "eslint-config-next": "13.2.4",
+    "eslint-config-prettier": "^8.7.0",
+    "eslint-plugin-sonarjs": "^0.18.0",
     "next": "13.2.4",
+    "postcss": "^8.4.21",
+    "prettier": "^2.8.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "sass": "^1.59.3",
+    "tailwindcss": "^3.2.7",
     "typescript": "5.0.2"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3"
   }
 }
