@@ -1,5 +1,5 @@
+import { generateTableDataFromNotionDatabase } from "@common/component-helpers/notion-table";
 import { queryNotionDatabase } from "@common/lib/notionClient";
-import { getTableDataFromNotionDatabase } from "@common/utils/helpers/notion";
 import Home from "@modules/Home";
 import { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
 import { Dispatch } from "@rematch-notion/store";
@@ -16,10 +16,10 @@ const HomePage: NextPage<Props> = (props) => {
   const dispatch = useDispatch<Dispatch>();
 
   useEffect(() => {
+    const tableData = generateTableDataFromNotionDatabase(canonicalData);
     dispatch.canonicalData.setCanonicalData(canonicalData);
-    dispatch.canonicalTableData.setCanonicalTableData(
-      getTableDataFromNotionDatabase(canonicalData)
-    );
+    dispatch.canonicalTableData.setCanonicalTableData(tableData);
+    dispatch.filteredTableData.setFilteredTableData(tableData);
   });
 
   return <Home />;

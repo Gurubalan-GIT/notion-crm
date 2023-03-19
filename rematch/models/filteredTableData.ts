@@ -3,14 +3,14 @@ import { createModel } from "@rematch/core";
 import type { RootModel } from ".";
 import { CanonicalTableDataType } from "../../common/types/global";
 
-export const canonicalTableData = createModel<RootModel>()({
+export const filteredTableData = createModel<RootModel>()({
   state: initialCanonicalTableDataState as CanonicalTableDataType,
   reducers: {
-    setCanonicalTableData: (_state, payload) => {
+    setFilteredTableData: (_state, payload) => {
       return { ...payload, isLoading: false };
     },
-    setCanonicalTableColumns: (state, payload) => {
-      return { ...state, columns: payload };
+    setFilteredTableDataSource: (state, payload) => {
+      return { ...state, dataSource: payload };
     },
   },
 });
