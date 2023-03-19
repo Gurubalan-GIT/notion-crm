@@ -35,7 +35,7 @@ const AppliedSortOptions = () => {
       {sorts?.map((sortField, sortFieldIndex) => (
         <Space
           size="middle"
-          key={sortFieldIndex}
+          key={sortField.key}
           className="pb-[10px]"
           align="center"
         >
