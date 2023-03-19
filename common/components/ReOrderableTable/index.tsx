@@ -6,7 +6,7 @@ import ResizableTitle from "../ResizableTitle";
 
 const ReOrderableTable = () => {
   const { columns, dataSource } = useSelector(
-    (state: RootState) => state.canonicalTableData
+    (state: RootState) => state.filteredTableData
   );
 
   const dispatch = useDispatch<Dispatch>();
@@ -14,20 +14,20 @@ const ReOrderableTable = () => {
   const handleResize =
     (index: number) =>
     (e: Event, { size }: { size: any }) => {
-      const nextColumns = [...columns!];
-      nextColumns[index] = {
-        ...nextColumns[index],
+      const resizedColumns = [...columns!];
+      resizedColumns[index] = {
+        ...resizedColumns[index],
         width: size.width,
       };
-      dispatch.canonicalTableData.setTableColumns(nextColumns);
+      dispatch.canonicalTableData.setCanonicalTableColumns(resizedColumns);
     };
 
   const dragProps = {
     onDragEnd(fromIndex: number, toIndex: number) {
-      const cols = [...columns!];
-      const item = cols.splice(fromIndex, 1)[0];
-      cols.splice(toIndex, 0, item);
-      dispatch.canonicalTableData.setTableColumns(cols);
+      const rearrangedColumns = [...columns!];
+      const item = rearrangedColumns.splice(fromIndex, 1)[0];
+      rearrangedColumns.splice(toIndex, 0, item);
+      dispatch.canonicalTableData.setCanonicalTableColumns(rearrangedColumns);
     },
     nodeSelector: "th",
     handleSelector: ".dragHandler",

@@ -20,7 +20,13 @@ module.exports = {
       xl: "1200px",
       xxl: "1440px",
     },
-    extend: {},
+    extend: {
+      colors: {
+        grey: {
+          200: "#e7e7e7",
+        },
+      },
+    },
     fontFamily: {
       sans: ["Inter", ...fontFamily.sans],
     },

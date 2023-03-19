@@ -38,7 +38,17 @@ p {
   z-index: 1;
 }
 
+.dragHandler {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  padding: 16px 16px;
+}
+
 .dragHandler:hover {
-  cursor: move;
-  background-color: #ccc;
+  @apply cursor-pointer bg-grey-200;
+}
+
+.ant-popover-inner {
+  padding: 0 !important;
 }

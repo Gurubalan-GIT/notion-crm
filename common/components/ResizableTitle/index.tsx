@@ -1,9 +1,10 @@
+import classNames from "classnames";
 import { FunctionComponent } from "react";
 import { Resizable } from "react-resizable";
 import { Props } from "./types";
 
 const ResizableTitle: FunctionComponent<Props> = (props) => {
-  const { onResize, width, ...restProps } = props;
+  const { onResize, width, className, ...restProps } = props;
 
   if (!width) {
     return <th {...restProps} />;
@@ -24,7 +25,7 @@ const ResizableTitle: FunctionComponent<Props> = (props) => {
       onResize={onResize}
       draggableOpts={{ enableUserSelectHack: false }}
     >
-      <th {...restProps} />
+      <th {...restProps} className={classNames(className, "!p-0")} />
     </Resizable>
   );
 };
