@@ -12,5 +12,8 @@ export const filteredTableData = createModel<RootModel>()({
     setFilteredTableDataSource: (state, payload) => {
       return { ...state, dataSource: payload };
     },
+    setFilteredTableColumns: (state, payload) => {
+      return { ...state, columns: payload };
+    },
   },
 });

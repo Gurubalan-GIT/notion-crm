@@ -15,8 +15,7 @@ const SortOptionsPopover = () => {
   const dispatch = useDispatch<Dispatch>();
 
   const filteredColumns = useMemo(() => {
-    const updatedColumns = [...columns!];
-    return updatedColumns.filter(
+    return columns?.filter(
       (updatedColumn: any) =>
         !sorts?.some((sort) => sort?.property === updatedColumn.dataIndex)
     );
@@ -33,6 +32,7 @@ const SortOptionsPopover = () => {
               {
                 property: column.dataIndex,
                 direction: "ascending",
+                key: column.key,
               },
             ])
           }

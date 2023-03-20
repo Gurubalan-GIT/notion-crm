@@ -25,9 +25,10 @@ export type CanonicalTableDataType = {
 export type SortDirection = "ascending" | "descending";
 
 export type SortFields = {
-  [key: string]: string | SortDirection;
+  [key: string]: string | SortDirection | number | undefined;
   property: string;
   direction: SortDirection;
+  key?: number;
 };
 
 export type TableDataOrganizersType = {

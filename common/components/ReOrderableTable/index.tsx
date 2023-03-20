@@ -19,7 +19,7 @@ const ReOrderableTable = () => {
         ...resizedColumns[index],
         width: size.width,
       };
-      dispatch.canonicalTableData.setCanonicalTableColumns(resizedColumns);
+      dispatch.filteredTableData.setFilteredTableColumns(resizedColumns);
     };
 
   const dragProps = {
@@ -27,7 +27,7 @@ const ReOrderableTable = () => {
       const rearrangedColumns = [...columns!];
       const item = rearrangedColumns.splice(fromIndex, 1)[0];
       rearrangedColumns.splice(toIndex, 0, item);
-      dispatch.canonicalTableData.setCanonicalTableColumns(rearrangedColumns);
+      dispatch.filteredTableData.setFilteredTableColumns(rearrangedColumns);
     },
     nodeSelector: "th",
     handleSelector: ".dragHandler",
