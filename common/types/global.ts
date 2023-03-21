@@ -1,24 +1,32 @@
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
-import { TableColumnsType } from "antd";
+import { ColumnsType } from "antd/es/table";
+
+export type AdditionalPageObjectResponse = {
+  value: string | number | boolean | Date | null;
+  actualValue: any;
+};
+
+export type CustomPageObjectResponse = AdditionalPageObjectResponse &
+  PageObjectResponse["properties"]["type"];
 
 export type DataSourceType = {
+  [id: string]: CustomPageObjectResponse | number;
   key: number;
-  company: PageObjectResponse["properties"];
-  estimated_value: PageObjectResponse["properties"];
-  name: PageObjectResponse["properties"];
-  priority: PageObjectResponse["properties"];
-  status: PageObjectResponse["properties"];
-  field: PageObjectResponse["properties"];
-  date: PageObjectResponse["properties"];
-  edited_time: PageObjectResponse["properties"];
-  progress: PageObjectResponse["properties"];
-  done: PageObjectResponse["properties"];
-  value: string | number | boolean | Date;
+  company: CustomPageObjectResponse;
+  estimated_value: CustomPageObjectResponse;
+  name: CustomPageObjectResponse;
+  priority: CustomPageObjectResponse;
+  status: CustomPageObjectResponse;
+  field: CustomPageObjectResponse;
+  date: CustomPageObjectResponse;
+  last_edited_time: CustomPageObjectResponse;
+  progress: CustomPageObjectResponse;
+  done: CustomPageObjectResponse;
 };
 
 export type CanonicalTableDataType = {
   isLoading: boolean;
-  columns?: TableColumnsType<DataSourceType>;
+  columns?: ColumnsType<DataSourceType>;
   dataSource?: Array<DataSourceType>;
 };
 

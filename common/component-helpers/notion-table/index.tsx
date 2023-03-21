@@ -1,4 +1,4 @@
-import { DataSourceType } from "@common/types/global";
+import { AdditionalPageObjectResponse } from "@common/types/global";
 import { toSnakeCase } from "@common/utils/helpers/global";
 import {
   PageObjectResponse,
@@ -6,85 +6,106 @@ import {
 } from "@notionhq/client/build/src/api-endpoints";
 import { Checkbox, Space } from "antd";
 import format from "date-fns/format";
-import { ReactNode } from "react";
 import PropertyTag from "./PropertyTag";
 
-const renderCellContent = (
-  text: DataSourceType["value"],
-  element: ReactNode,
-  returnText: boolean
-) => {
-  return returnText ? text : element;
-};
-
+// TODO: Optimize with hashmap
 const renderComponentsByNotionDatabasePropertyTypes = (
-  property: PageObjectResponse["properties"]["type"],
-  returnText: boolean = false
+  property: PageObjectResponse["properties"]["type"]
 ) => {
-  let content: DataSourceType["value"];
+  let content: AdditionalPageObjectResponse["value"];
   switch (property.type) {
     case "rich_text":
-      content = property.rich_text[0].plain_text;
-      return renderCellContent(content, <span>{content}</span>, returnText);
+      content = !!property.rich_text.length
+        ? property.rich_text[0].plain_text
+        : null;
+      return {
+        value: content,
+        element: <span>{content ?? ""}</span>,
+        actualValue: content,
+      };
     case "number":
       content = property.number!;
-      return renderCellContent(content, <span>{content}</span>, returnText);
+      return {
+        value: content,
+        element: <span>{content ?? ""}</span>,
+        actualValue: content,
+      };
     case "title":
-      content = property.title[0].plain_text;
-      return renderCellContent(content, <span>{content}</span>, returnText);
+      content = !!property.title.length ? property.title[0].plain_text : null;
+      return {
+        value: content,
+        element: <span>{content ?? ""}</span>,
+        actualValue: content,
+      };
     case "select":
       content = property.select?.name!;
-      return renderCellContent(
-        property.select?.name!,
-        <PropertyTag color={property.select?.color!} text={content} />,
-        returnText
-      );
+      return {
+        value: content,
+        element: content ? (
+          <PropertyTag color={property.select?.color!} text={content} />
+        ) : (
+          ""
+        ),
+        actualValue: content,
+      };
     case "status":
       content = property.status?.name!;
-      return renderCellContent(
-        content,
-        <PropertyTag color={property.status?.color!} text={content} />,
-        returnText
-      );
+      return {
+        value: content,
+        element: content ? (
+          <PropertyTag color={property.status?.color!} text={content} />
+        ) : (
+          ""
+        ),
+        actualValue: content,
+      };
+
     case "multi_select":
       content = property.multi_select.length;
-      return renderCellContent(
-        content,
-        <Space size={[4, 4]} wrap>
-          {property.multi_select.map((option) => (
-            <PropertyTag
-              key={option.id}
-              color={option.color}
-              text={option.name}
-            />
-          ))}
-        </Space>,
-        returnText
-      );
+      return {
+        value: content,
+        element: (
+          <Space size={[4, 4]} wrap>
+            {property.multi_select.map((option) => (
+              <PropertyTag
+                key={option.id}
+                color={option.color}
+                text={option.name}
+              />
+            ))}
+          </Space>
+        ),
+        actualValue: property.multi_select.map((tags) => tags.name),
+      };
+
     case "last_edited_time":
       const date = new Date(property.last_edited_time);
-      return renderCellContent(
-        date,
-        <span>{format(date, "dd/MM/yyyy hh:mm aa")}</span>,
-        returnText
-      );
+      return {
+        value: date,
+        element: <span>{format(date, "dd/MM/yyyy hh:mm aa")}</span>,
+        actualValue: date,
+      };
     case "date":
       content = new Date(property.date?.start!);
-      return renderCellContent(
-        content,
-        <span>{format(content, "MMM dd, yyyy")}</span>,
-        returnText
-      );
+      return {
+        value: content,
+        element: <span>{format(content, "MMM dd, yyyy")}</span>,
+        actualValue: content,
+      };
     case "checkbox":
       content = property.checkbox;
-      return renderCellContent(
-        content,
-        <Checkbox checked={content} disabled />,
-        returnText
-      );
+      return {
+        value: content,
+        element: <Checkbox checked={content} disabled />,
+        actualValue: content,
+      };
     default:
       content = "Unsupported Property Format";
-      return renderCellContent(content, <span>content</span>, returnText);
+      return {
+        value: "Unsupported Property Format",
+        element: <span>{content}</span>,
+        actualValue: content,
+      };
   }
 };
 
@@ -94,14 +115,16 @@ export const generateTableDataFromNotionDatabase = (
   const columns = Object.keys(
     (results[0] as PageObjectResponse).properties
   ).map((columnName, columnIndex) => {
+    const property = (results[0] as PageObjectResponse).properties[columnName];
     return {
       title: <span className="dragHandler">{columnName}</span>,
       dataIndex: toSnakeCase(columnName),
       value: columnName,
       render: (property: PageObjectResponse["properties"]["type"]) =>
-        renderComponentsByNotionDatabasePropertyTypes(property),
+        renderComponentsByNotionDatabasePropertyTypes(property).element,
       width: 100,
       key: columnIndex + 1,
+      type: property.type,
     };
   });
 
@@ -116,7 +139,9 @@ export const generateTableDataFromNotionDatabase = (
           const property = properties[key];
           rowDataSource[snakeCasedKey] = property;
           rowDataSource[snakeCasedKey].value =
-            renderComponentsByNotionDatabasePropertyTypes(property, true);
+            renderComponentsByNotionDatabasePropertyTypes(property).value;
+          rowDataSource[snakeCasedKey].actualValue =
+            renderComponentsByNotionDatabasePropertyTypes(property).actualValue;
           rowDataSource.key = queriedRowIndex + 1;
         }
       }

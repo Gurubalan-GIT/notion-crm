@@ -22,7 +22,7 @@ const SortOptionsPopover = () => {
   }, [columns, sorts]);
 
   return (
-    <Col className="w-[150px]">
+    <Col className="w-[150px] h-[200px] overflow-y-auto">
       {filteredColumns?.map((column: any) => (
         <Row
           className="p-[8px] hover:bg-grey-200 cursor-pointer"
