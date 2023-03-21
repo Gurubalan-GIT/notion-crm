@@ -1,47 +1,69 @@
 import { LoadingOutlined } from "@ant-design/icons";
+import AppliedFilters from "@common/components/AppliedFilters";
 import AppliedSortOptions from "@common/components/AppliedSortOptions";
+import FilterOptionsPopover from "@common/components/FilterOptionsPopover";
 import ReOrderableTable from "@common/components/ReOrderableTable";
 import SortOptionsPopover from "@common/components/SortOptionsPopover";
-import { sortByProperties } from "@common/utils/helpers/global";
+import { isObjectEmpty } from "@common/utils/helpers/global";
+import {
+  filterByProperties,
+  sortByProperties,
+} from "@common/utils/helpers/memoizers";
 import { Dispatch, RootState } from "@rematch-notion/store";
 import { Button, Col, Popover, Row, Space } from "antd";
-import { FunctionComponent, useEffect, useMemo } from "react";
+import { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Props } from "./types";
 
 const Home: FunctionComponent<Props> = () => {
-  const { isLoading, dataSource } = useSelector(
+  const { isLoading } = useSelector(
     (state: RootState) => state.filteredTableData
+  );
+
+  const { dataSource: canonicalDataSource } = useSelector(
+    (state: RootState) => state.canonicalTableData
   );
 
   const tableDataOrganizers = useSelector(
     (state: RootState) => state.tableDataOrganizers
   );
 
-  const { sorts } = tableDataOrganizers;
+  const { sorts, filters } = tableDataOrganizers;
 
   const dispatch = useDispatch<Dispatch>();
 
-  const sortedDataSource = useMemo(() => {
-    const updatedDataSource = [...dataSource!];
-    updatedDataSource.sort(sortByProperties(tableDataOrganizers.sorts));
+  const [showAppliedSorts, setShowAppliedSorts] = useState(false);
+  const areSortsEmpty = isObjectEmpty(sorts);
+  const areFiltersEmpty = isObjectEmpty(filters);
+
+  const updatedDataSource = useMemo(() => {
+    const updatedDataSource = structuredClone(canonicalDataSource)!;
+
+    if (!areSortsEmpty) {
+      updatedDataSource.sort(sortByProperties(tableDataOrganizers.sorts));
+    }
+
+    if (!areFiltersEmpty) {
+      return updatedDataSource.filter((data) =>
+        filterByProperties(data, filters)
+      );
+    }
     return updatedDataSource;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableDataOrganizers]);
 
   useEffect(() => {
-    dispatch.filteredTableData.setFilteredTableDataSource(sortedDataSource);
-  }, [dispatch.filteredTableData, sortedDataSource]);
+    dispatch.filteredTableData.setFilteredTableDataSource(updatedDataSource);
+  }, [dispatch.filteredTableData, updatedDataSource]);
 
   return (
-    <div className="h-screen w-full flex justify-center items-center">
+    <div className="min-h-screen w-full flex justify-center items-start py-[30px] px-[20px]">
       {isLoading ? (
         <LoadingOutlined style={{ fontSize: 24 }} spin />
       ) : (
         <Col>
           <Row className="pb-[20px] w-full flex justify-end">
-            <Space>
-              <Button size="small">Filter</Button>
+            <Space size="large">
               <Popover
                 key="sort-options-popover"
                 content={SortOptionsPopover}
@@ -49,24 +71,54 @@ const Home: FunctionComponent<Props> = () => {
                 placement="bottom"
                 arrow={false}
                 className="p-0"
+                getPopupContainer={(triggerNode) => triggerNode.parentElement!}
               >
                 <Button size="small">Add Sort</Button>
               </Popover>
+              {areFiltersEmpty && (
+                <Popover
+                  key="filter-options-popover"
+                  content={FilterOptionsPopover}
+                  trigger="click"
+                  placement="bottom"
+                  arrow={false}
+                  className="p-0"
+                  getPopupContainer={(triggerNode) =>
+                    triggerNode.parentElement!
+                  }
+                >
+                  <Button size="small">Add Advanced Filter</Button>
+                </Popover>
+              )}
             </Space>
           </Row>
-          <Row className="pb-[10px]">
-            {!!sorts.length && (
-              <Popover
-                key="applied-sorts-popover"
-                content={AppliedSortOptions}
-                trigger="click"
-                placement="bottom"
-                arrow={false}
-              >
-                <Button size="small">{sorts.length} Sorts Applied</Button>
-              </Popover>
-            )}
-          </Row>
+          <Space size="large" className="pb-[10px] items-start">
+            {
+              <Col>
+                <Button
+                  onClick={() => setShowAppliedSorts((prevState) => !prevState)}
+                  size="small"
+                >
+                  +{sorts.length} Sorts Applied
+                </Button>
+                {showAppliedSorts && <AppliedSortOptions />}
+              </Col>
+            }
+            {
+              <Col className="flex flex-col items-start">
+                <Button
+                  // onClick={() => setShowAppliedSorts((prevState) => !prevState)}
+                  size="small"
+                  className="w-fit"
+                >
+                  Filters Applied
+                </Button>
+                <Col className="mt-3">
+                  <AppliedFilters />
+                </Col>
+              </Col>
+            }
+          </Space>
           <ReOrderableTable />
         </Col>
       )}

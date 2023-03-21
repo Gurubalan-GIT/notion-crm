@@ -6,7 +6,7 @@ import { TableDataOrganizersType } from "../../common/types/global";
 export const tableDataOrganizers = createModel<RootModel>()({
   state: initialTableDataOrganizers as TableDataOrganizersType,
   reducers: {
-    setTableDataFilters: (_state, payload) => payload,
+    setTableDataOrganizers: (_state, payload) => payload,
     setSorts: (state, payload) => {
       return { ...state, sorts: [...payload] };
     },
@@ -14,6 +14,18 @@ export const tableDataOrganizers = createModel<RootModel>()({
       return {
         ...state,
         sorts: [...state.sorts, ...payload],
+      };
+    },
+    setFilters: (state, payload) => {
+      return {
+        ...state,
+        filters: payload,
+      };
+    },
+    updateFilters: (state, payload) => {
+      return {
+        ...state,
+        filters: { ...state.filters, ...payload },
       };
     },
   },
