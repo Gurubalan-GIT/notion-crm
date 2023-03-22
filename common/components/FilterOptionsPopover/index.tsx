@@ -1,5 +1,7 @@
+import { filterConditionsActionHashMap } from "@common/utils/helpers/hashmaps";
 import { Dispatch, RootState } from "@rematch-notion/store";
 import { Col, Row } from "antd";
+import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
 
 const FilterOptionsPopover = () => {
@@ -16,12 +18,14 @@ const FilterOptionsPopover = () => {
           className="p-[8px] hover:bg-grey-200 cursor-pointer"
           key={column.key}
           onClick={() => {
+            const filterType = column?.type;
             dispatch.tableDataOrganizers.setFilters({
               and: [
                 {
                   property: column.dataIndex,
-                  title: {
-                    contains: "",
+                  [filterType]: {
+                    [Object.keys(filterConditionsActionHashMap[filterType])[0]]:
+                      filterType === "date" ? dayjs() : "",
                   },
                 },
               ],

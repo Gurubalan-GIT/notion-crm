@@ -8,7 +8,7 @@ import { Checkbox, Space } from "antd";
 import format from "date-fns/format";
 import PropertyTag from "./PropertyTag";
 
-// TODO: Optimize with hashmap
+// TODO: Optimize with hashmap, too much cognitive complexity
 const renderComponentsByNotionDatabasePropertyTypes = (
   property: PageObjectResponse["properties"]["type"]
 ) => {
@@ -21,7 +21,7 @@ const renderComponentsByNotionDatabasePropertyTypes = (
       return {
         value: content,
         element: <span>{content ?? ""}</span>,
-        actualValue: content,
+        actualValue: content ?? "",
       };
     case "number":
       content = property.number!;
@@ -35,7 +35,7 @@ const renderComponentsByNotionDatabasePropertyTypes = (
       return {
         value: content,
         element: <span>{content ?? ""}</span>,
-        actualValue: content,
+        actualValue: content ?? "",
       };
     case "select":
       content = property.select?.name!;
@@ -46,7 +46,7 @@ const renderComponentsByNotionDatabasePropertyTypes = (
         ) : (
           ""
         ),
-        actualValue: content,
+        actualValue: content ?? "",
       };
     case "status":
       content = property.status?.name!;
@@ -57,7 +57,7 @@ const renderComponentsByNotionDatabasePropertyTypes = (
         ) : (
           ""
         ),
-        actualValue: content,
+        actualValue: content ?? "",
       };
 
     case "multi_select":
@@ -86,10 +86,12 @@ const renderComponentsByNotionDatabasePropertyTypes = (
         actualValue: date,
       };
     case "date":
-      content = new Date(property.date?.start!);
+      content = property?.date ? new Date(property.date?.start!) : null;
       return {
         value: content,
-        element: <span>{format(content, "MMM dd, yyyy")}</span>,
+        element: content ? (
+          <span>{format(content, "MMM dd, yyyy")}</span>
+        ) : null,
         actualValue: content,
       };
     case "checkbox":

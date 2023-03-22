@@ -9,11 +9,28 @@ A Notion view that can render data from a Notion Database and perform complex fu
 - Run the production server : `yarn build && yarn start`
 - To lint and test the codebase with linters : `yarn test-all`
 
+## Goal and Case Study
+
+You can get a clearer picture with the feature pipeline below. In brief, in a Notion DB ( Table Database ) we have the ability to apply advanced filters and nested sorts.
+
+Example:
+<img src='./public/github-assets/notion-filter.png' alt='notion-filter-view' />
+
+The limitation here is that Notion only supports up to `2 depth` levels of nested filters. Our goal is to remove that and support `n` levels of depth filters.
+
+This is how the current version looks like:
+
+<img src='./public/github-assets/extended-notion-filter.png' alt='extended-notion-filter-view' />
+
 ## Disclaimer and things to keep in mind
 
 ### Design System
 
 Ant Design is used here as the design system. **This is utilized strictly only for building the UI elements faster and all the logical features are written in-house.**
+
+### Bugs
+
+As of now, there are bugs can be referenced under [Issues](https://github.com/Gurubalan-GIT/notion-crm/issues). This is still a work in progress, please feel free to create issue tickets for unraised bugs.
 
 ## Feature Pipeline
 
