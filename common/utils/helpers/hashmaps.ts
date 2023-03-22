@@ -98,6 +98,10 @@ export const filterConditionsActionHashMap: any = {
       filters: any,
       databaseProperty: CustomPageObjectResponse
     ) => filters?.checkbox?.does_not_equal !== databaseProperty.actualValue,
+    is_not_empty: (_: any, databaseProperty: CustomPageObjectResponse) =>
+      filterConditionActions.is_not_empty(databaseProperty),
+    is_empty: (_: any, databaseProperty: CustomPageObjectResponse) =>
+      filterConditionActions.is_empty(databaseProperty),
   },
   select: getTextFilterConditionActions("select"),
   status: getTextFilterConditionActions("status"),
@@ -105,6 +109,10 @@ export const filterConditionsActionHashMap: any = {
   last_edited_time: getDateFilterConditionActions("last_edited_time"),
   date: getDateFilterConditionActions("date"),
   number: {
+    is_not_empty: (_: any, databaseProperty: CustomPageObjectResponse) =>
+      filterConditionActions.is_not_empty(databaseProperty),
+    is_empty: (_: any, databaseProperty: CustomPageObjectResponse) =>
+      filterConditionActions.is_empty(databaseProperty),
     equals: (filters: any, databaseProperty: CustomPageObjectResponse) => {
       if (filters?.number.equals === EMPTY_VALUE) return true;
       return databaseProperty.actualValue === filters?.number.equals;
@@ -126,10 +134,6 @@ export const filterConditionsActionHashMap: any = {
       filters: any,
       databaseProperty: CustomPageObjectResponse
     ) => databaseProperty.actualValue <= filters?.number?.less_than_or_equal_to,
-    is_empty: (_: any, databaseProperty: CustomPageObjectResponse) =>
-      filterConditionActions.is_empty(databaseProperty),
-    is_not_empty: (_: any, databaseProperty: CustomPageObjectResponse) =>
-      filterConditionActions.is_not_empty(databaseProperty),
   },
   rich_text: getTextFilterConditionActions("rich_text"),
   multi_select: {

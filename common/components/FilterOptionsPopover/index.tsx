@@ -1,7 +1,5 @@
-import { filterConditionsActionHashMap } from "@common/utils/helpers/hashmaps";
 import { Dispatch, RootState } from "@rematch-notion/store";
 import { Col, Row } from "antd";
-import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
 
 const FilterOptionsPopover = () => {
@@ -24,10 +22,7 @@ const FilterOptionsPopover = () => {
                 {
                   property: column.dataIndex,
                   [filterType]: {
-                    [Object.keys(filterConditionsActionHashMap[filterType])[0]]:
-                      filterType === "date" || "last_edited_time"
-                        ? dayjs()
-                        : "",
+                    is_not_empty: "",
                   },
                 },
               ],
