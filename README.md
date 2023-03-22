@@ -35,6 +35,24 @@ Ant Design is used here as the design system. **This is utilized strictly only f
 
 As of now, there are bugs amd these can be referenced under [Issues](https://github.com/Gurubalan-GIT/notion-crm/issues). This is still a work in progress, please feel free to create issue tickets for unraised bugs.
 
+## Codebase Quality Control
+- Pre-commit hooks via Husky.
+  - This uses prettier and eslint configs together to setup linting when commiting.
+- Github linters for automated commit annotations via [Github actions](https://github.com/Gurubalan-GIT/netbook-social/blob/main/.github/workflows/linter.yml).
+  - This runs a linter action based on the prettier and eslint configs in the respective PR and lints the PR for a status check.
+  
+
+## Key Logics 
+
+- [Memoized Filter [Side Effect]](./common/utils/helpers/memoizers.ts)
+- [Memoized Sort [Side Effect]](./common/utils/helpers/memoizers.ts)
+- [Nested State Update for Nested Filter Component](./common/utils/helpers/filters.ts)
+- [HashMaps for making Column-Column Type-Type Specific Filters-Filter Actions easy](./common/utils/helpers/hashmaps.ts)
+
+## State Management 
+
+[RematchJS](https://rematchjs.org/) is used for state management.
+
 ## Feature Pipeline
 
 - [x] Build a table view UI for Notion databases
