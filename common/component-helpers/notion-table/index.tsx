@@ -28,7 +28,7 @@ const renderComponentsByNotionDatabasePropertyTypes = (
       return {
         value: content,
         element: <span>{content ?? ""}</span>,
-        actualValue: content,
+        actualValue: content ?? "",
       };
     case "title":
       content = !!property.title.length ? property.title[0].plain_text : null;
@@ -79,11 +79,15 @@ const renderComponentsByNotionDatabasePropertyTypes = (
       };
 
     case "last_edited_time":
-      const date = new Date(property.last_edited_time);
+      content = property?.last_edited_time
+        ? new Date(property.last_edited_time)
+        : null;
       return {
-        value: date,
-        element: <span>{format(date, "dd/MM/yyyy hh:mm aa")}</span>,
-        actualValue: date,
+        value: content,
+        element: content ? (
+          <span>{format(content, "dd/MM/yyyy hh:mm aa")}</span>
+        ) : null,
+        actualValue: content,
       };
     case "date":
       content = property?.date ? new Date(property.date?.start!) : null;

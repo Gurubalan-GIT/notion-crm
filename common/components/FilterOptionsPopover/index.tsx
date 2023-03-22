@@ -25,7 +25,9 @@ const FilterOptionsPopover = () => {
                   property: column.dataIndex,
                   [filterType]: {
                     [Object.keys(filterConditionsActionHashMap[filterType])[0]]:
-                      filterType === "date" ? dayjs() : "",
+                      filterType === "date" || "last_edited_time"
+                        ? dayjs()
+                        : "",
                   },
                 },
               ],
