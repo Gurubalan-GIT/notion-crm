@@ -74,7 +74,7 @@ const getTextFilterConditionActions = (property: string) => {
         filters?.[property].does_not_contain
       ),
     equals: (filters: any, databaseProperty: CustomPageObjectResponse) => {
-      if (filters?.title.equals === EMPTY_VALUE) return true;
+      if (filters?.[property].equals === EMPTY_VALUE) return true;
       return databaseProperty.actualValue === filters?.[property].equals;
     },
     ends_with: (filters: any, databaseProperty: CustomPageObjectResponse) =>
@@ -87,6 +87,8 @@ const getTextFilterConditionActions = (property: string) => {
       filterConditionActions.is_not_empty(databaseProperty),
   };
 };
+
+// TODO: Make use of negations better for already written functions / logics
 
 export const filterConditionsActionHashMap: any = {
   checkbox: {
