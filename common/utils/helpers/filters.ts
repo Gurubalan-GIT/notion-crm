@@ -1,38 +1,8 @@
 import { isObjectEmpty } from "@common/utils/helpers/global";
 import { filterActions } from "./hashmaps";
-export const compoundFilters = {
-  or: [
-    {
-      property: "name",
-      title: {
-        contains: "Ellis",
-      },
-    },
-    {
-      property: "progress",
-      status: {
-        contains: "Done",
-      },
-    },
-    {
-      or: [
-        {
-          property: "field",
-          multi_select: {
-            contains: "Management, SEO",
-          },
-        },
-        {
-          property: "last_edited_time",
-          last_edited_time: {
-            on_or_before: "2025-05-19",
-          },
-        },
-      ],
-    },
-  ],
-};
+export const compoundFilters = {};
 
+// #TESTME : Possible bugs when deletions are traversed from outer depth levels, need to clear parent objects when inner child is deleted from outer depths
 export const performFilterAction = (
   rootFilters: any,
   depth: number,

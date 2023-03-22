@@ -33,6 +33,8 @@ const Home: FunctionComponent<Props> = () => {
   const dispatch = useDispatch<Dispatch>();
 
   const [showAppliedSorts, setShowAppliedSorts] = useState(false);
+  const [showAppliedFilters, setShowAppliedFilters] = useState(false);
+
   const areSortsEmpty = isObjectEmpty(sorts);
   const areFiltersEmpty = isObjectEmpty(filters);
 
@@ -98,7 +100,7 @@ const Home: FunctionComponent<Props> = () => {
             </Space>
           </Row>
           <Space size="large" className="pb-[10px] items-start">
-            {
+            {!areSortsEmpty && (
               <Col>
                 <Button
                   onClick={() => setShowAppliedSorts((prevState) => !prevState)}
@@ -108,21 +110,23 @@ const Home: FunctionComponent<Props> = () => {
                 </Button>
                 {showAppliedSorts && <AppliedSortOptions />}
               </Col>
-            }
-            {
+            )}
+            {!areFiltersEmpty && (
               <Col className="flex flex-col items-start">
                 <Button
-                  // onClick={() => setShowAppliedSorts((prevState) => !prevState)}
+                  onClick={() =>
+                    setShowAppliedFilters((prevState) => !prevState)
+                  }
                   size="small"
                   className="w-fit"
                 >
-                  Filters Applied
+                  +Filters Applied
                 </Button>
                 <Col className="mt-3">
-                  {!areFiltersEmpty && <AppliedFilters />}
+                  {showAppliedFilters && <AppliedFilters />}
                 </Col>
               </Col>
-            }
+            )}
           </Space>
           <ReOrderableTable />
         </Col>

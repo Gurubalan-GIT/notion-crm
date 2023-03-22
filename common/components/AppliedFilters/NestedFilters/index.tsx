@@ -6,6 +6,10 @@ import {
   filterConditionsActionHashMap,
   filterOptionsHashMap,
 } from "@common/utils/helpers/hashmaps";
+import {
+  IS_EMPTY_FILTER,
+  IS_NOT_EMPTY_FILTER,
+} from "@common/utils/localization";
 import { Col, DatePicker, Input, InputNumber, Select, Space } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
@@ -33,6 +37,7 @@ const NestedFilters: FunctionComponent<Props> = (props) => {
   } = props;
   const [columnValue, setColumnValue] = useState(filters?.property);
   const [filterCondition, setFilterCondition] = useState<null | string>(null);
+  const [inputValue, setInputValue] = useState(null);
 
   useEffect(() => {
     if (filters?.property) {
@@ -45,11 +50,22 @@ const NestedFilters: FunctionComponent<Props> = (props) => {
       const filterType = (columns as any)?.find(
         (column: any) => column.dataIndex === columnValue
       )?.type;
-      setFilterCondition(
-        Object.keys(filterConditionsActionHashMap[filterType])[0]
-      );
+      if (filterType) {
+        setFilterCondition(
+          Object.keys(filterConditionsActionHashMap[filterType])[0]
+        );
+      }
     }
   }, [columnValue, columns]);
+
+  useEffect(() => {
+    if (columnValue && filterCondition) {
+      const filterType = (columns as any)?.find(
+        (column: any) => column.dataIndex === columnValue
+      )?.type;
+      setInputValue(filters?.[filterType]?.[filterCondition!]);
+    }
+  }, [columnValue, columns, filterCondition, filters]);
 
   const handleAddFilter = (isGroupFilter: boolean = false) => {
     const commonNewFilter = {
@@ -155,6 +171,7 @@ const NestedFilters: FunctionComponent<Props> = (props) => {
   )?.type;
 
   const handleInputChange = (value: any) => {
+    setInputValue(value);
     handleChange(
       depth,
       pathIndex,
@@ -167,6 +184,37 @@ const NestedFilters: FunctionComponent<Props> = (props) => {
       filterActions.UPDATE,
       compoundFilterKey
     );
+  };
+
+  const handleFilterConditionChange = (value: any) => {
+    setFilterCondition(value);
+    if (value === IS_EMPTY_FILTER || value === IS_NOT_EMPTY_FILTER) {
+      handleChange(
+        depth,
+        pathIndex,
+        {
+          property: columnValue,
+          [filterType]: {
+            [value]: "",
+          },
+        },
+        filterActions.UPDATE,
+        compoundFilterKey
+      );
+    } else {
+      handleChange(
+        depth,
+        pathIndex,
+        {
+          property: columnValue,
+          [filterType]: {
+            [value]: inputValue,
+          },
+        },
+        filterActions.UPDATE,
+        compoundFilterKey
+      );
+    }
   };
 
   const renderInputByType = (type: CustomPageObjectResponse["type"]) => {
@@ -188,7 +236,8 @@ const NestedFilters: FunctionComponent<Props> = (props) => {
           <InputNumber
             size="small"
             value={value}
-            onChange={(e) => handleInputChange(e.target.value)}
+            onChange={(value) => handleInputChange(value)}
+            type="number"
           />
         );
       case "checkbox":
@@ -212,10 +261,11 @@ const NestedFilters: FunctionComponent<Props> = (props) => {
         return (
           <DatePicker
             size="small"
-            value={dayjs(value)}
+            value={value ? dayjs(value) : dayjs()}
             onChange={(value) =>
               handleInputChange(dayjs(value).format("YYYY-MM-DD"))
             }
+            allowClear={false}
           />
         );
       case "multi_select":
@@ -267,19 +317,22 @@ const NestedFilters: FunctionComponent<Props> = (props) => {
             <Select
               size="small"
               value={filterCondition}
-              onChange={(value) => setFilterCondition(value)}
+              onChange={handleFilterConditionChange}
             >
-              {Object.keys(filterConditionsActionHashMap[filterType]).map(
-                (condition: string, conditionIndex: number) => (
-                  <Option key={conditionIndex} value={condition}>
-                    {condition.replaceAll("_", " ")}
-                  </Option>
-                )
-              )}
+              {filterType &&
+                Object.keys(filterConditionsActionHashMap[filterType]).map(
+                  (condition: string, conditionIndex: number) => (
+                    <Option key={conditionIndex} value={condition}>
+                      {condition.replaceAll("_", " ")}
+                    </Option>
+                  )
+                )}
             </Select>
             {!(
-              filterCondition == "is_empty" || filterCondition == "is_not_empty"
+              filterCondition == IS_EMPTY_FILTER ||
+              filterCondition == IS_NOT_EMPTY_FILTER
             ) &&
+              filterType &&
               renderInputByType(filterType as CustomPageObjectResponse["type"])}
           </Space>
         </Col>

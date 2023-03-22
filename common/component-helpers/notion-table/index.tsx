@@ -8,7 +8,7 @@ import { Checkbox, Space } from "antd";
 import format from "date-fns/format";
 import PropertyTag from "./PropertyTag";
 
-// TODO: Optimize with hashmap
+// TODO: Optimize with hashmap, too much cognitive complexity
 const renderComponentsByNotionDatabasePropertyTypes = (
   property: PageObjectResponse["properties"]["type"]
 ) => {
@@ -21,21 +21,21 @@ const renderComponentsByNotionDatabasePropertyTypes = (
       return {
         value: content,
         element: <span>{content ?? ""}</span>,
-        actualValue: content,
+        actualValue: content ?? "",
       };
     case "number":
       content = property.number!;
       return {
         value: content,
         element: <span>{content ?? ""}</span>,
-        actualValue: content,
+        actualValue: content ?? "",
       };
     case "title":
       content = !!property.title.length ? property.title[0].plain_text : null;
       return {
         value: content,
         element: <span>{content ?? ""}</span>,
-        actualValue: content,
+        actualValue: content ?? "",
       };
     case "select":
       content = property.select?.name!;
@@ -46,7 +46,7 @@ const renderComponentsByNotionDatabasePropertyTypes = (
         ) : (
           ""
         ),
-        actualValue: content,
+        actualValue: content ?? "",
       };
     case "status":
       content = property.status?.name!;
@@ -57,7 +57,7 @@ const renderComponentsByNotionDatabasePropertyTypes = (
         ) : (
           ""
         ),
-        actualValue: content,
+        actualValue: content ?? "",
       };
 
     case "multi_select":
@@ -79,17 +79,23 @@ const renderComponentsByNotionDatabasePropertyTypes = (
       };
 
     case "last_edited_time":
-      const date = new Date(property.last_edited_time);
-      return {
-        value: date,
-        element: <span>{format(date, "dd/MM/yyyy hh:mm aa")}</span>,
-        actualValue: date,
-      };
-    case "date":
-      content = new Date(property.date?.start!);
+      content = property?.last_edited_time
+        ? new Date(property.last_edited_time)
+        : null;
       return {
         value: content,
-        element: <span>{format(content, "MMM dd, yyyy")}</span>,
+        element: content ? (
+          <span>{format(content, "dd/MM/yyyy hh:mm aa")}</span>
+        ) : null,
+        actualValue: content,
+      };
+    case "date":
+      content = property?.date ? new Date(property.date?.start!) : null;
+      return {
+        value: content,
+        element: content ? (
+          <span>{format(content, "MMM dd, yyyy")}</span>
+        ) : null,
         actualValue: content,
       };
     case "checkbox":
