@@ -5,3 +5,5 @@ export const toSnakeCase = (string: string) =>
 
 export const isObjectEmpty = (object: object) =>
   Object.keys(object).length === 0;
+
+export const isEmptyValue = (value: string | null | undefined) => value === "";

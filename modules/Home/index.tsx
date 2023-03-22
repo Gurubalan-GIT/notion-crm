@@ -49,8 +49,13 @@ const Home: FunctionComponent<Props> = () => {
       );
     }
     return updatedDataSource;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableDataOrganizers]);
+  }, [
+    areFiltersEmpty,
+    areSortsEmpty,
+    canonicalDataSource,
+    filters,
+    tableDataOrganizers.sorts,
+  ]);
 
   useEffect(() => {
     dispatch.filteredTableData.setFilteredTableDataSource(updatedDataSource);
@@ -114,7 +119,7 @@ const Home: FunctionComponent<Props> = () => {
                   Filters Applied
                 </Button>
                 <Col className="mt-3">
-                  <AppliedFilters />
+                  {!areFiltersEmpty && <AppliedFilters />}
                 </Col>
               </Col>
             }

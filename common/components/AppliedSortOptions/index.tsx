@@ -3,10 +3,11 @@ import { DataSourceType } from "@common/types/global";
 import { Dispatch, RootState } from "@rematch-notion/store";
 import { Col, Select, Space } from "antd";
 import { ColumnType } from "antd/es/table";
+import { FunctionComponent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 const { Option } = Select;
 
-const AppliedSortOptions = () => {
+const AppliedSortOptions: FunctionComponent<{}> = () => {
   const { sorts } = useSelector(
     (state: RootState) => state.tableDataOrganizers
   );

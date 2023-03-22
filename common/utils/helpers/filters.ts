@@ -1,39 +1,39 @@
 import { isObjectEmpty } from "@common/utils/helpers/global";
+import { filterActions } from "./hashmaps";
 export const compoundFilters = {
-  // or: [
-  //   {
-  //     property: "name",
-  //     title: {
-  //       contains: "Ellis",
-  //     },
-  //   },
-  //   {
-  //     or: [
-  //       {
-  //         property: "status",
-  //         select: {
-  //           contains: "Lead",
-  //         },
-  //       },
-  //       {
-  //         property: "priority",
-  //         select: {
-  //           contains: "Medium",
-  //         },
-  //       },
-  //     ],
-  //   },
-  // ],
+  or: [
+    {
+      property: "name",
+      title: {
+        contains: "Ellis",
+      },
+    },
+    {
+      property: "progress",
+      status: {
+        contains: "Done",
+      },
+    },
+    {
+      or: [
+        {
+          property: "field",
+          multi_select: {
+            contains: "Management, SEO",
+          },
+        },
+        {
+          property: "last_edited_time",
+          last_edited_time: {
+            on_or_before: "2025-05-19",
+          },
+        },
+      ],
+    },
+  ],
 };
 
-export const filterActions = {
-  DELETE: "delete",
-  UPDATE: "update",
-  ADD: "add",
-  UPDATE_COMPOUND_FILTER: "update_compound_filter",
-};
-
-export const performAction = (
+export const performFilterAction = (
   rootFilters: any,
   depth: number,
   pathIndex: number,
@@ -103,7 +103,7 @@ export const getNestedUpdate = (
   }
 
   if (depth === 1) {
-    return performAction(
+    return performFilterAction(
       rootFilters,
       depth,
       pathIndex,
