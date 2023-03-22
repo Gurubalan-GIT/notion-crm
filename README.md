@@ -1,4 +1,4 @@
-## Introduction
+## [Notion View](https://notion-crm-view.vercel.app/)
 
 A Notion view that can render data from a Notion Database and perform complex functions extending Notion's out of the box features such as compound filters and sorting.
 
@@ -30,7 +30,7 @@ Ant Design is used here as the design system. **This is utilized strictly only f
 
 ### Bugs
 
-As of now, there are bugs can be referenced under [Issues](https://github.com/Gurubalan-GIT/notion-crm/issues). This is still a work in progress, please feel free to create issue tickets for unraised bugs.
+As of now, there are bugs amd these can be referenced under [Issues](https://github.com/Gurubalan-GIT/notion-crm/issues). This is still a work in progress, please feel free to create issue tickets for unraised bugs.
 
 ## Feature Pipeline
 
