@@ -13,10 +13,13 @@ A Notion view that can render data from a Notion Database and perform complex fu
 
 You can get a clearer picture with the feature pipeline below. In brief, in a Notion DB ( Table Database ) we have the ability to apply advanced filters and nested sorts.
 
-Example:
-<img src='./public/github-assets/notion-filter.png' alt='notion-filter-view' />
+When it comes to sorting, we have the same functionality as (nested sorts)[https://developers.notion.com/reference/post-database-query-sort] in Notion.
 
-The limitation here is that Notion only supports up to `2 depth` levels of nested filters. Our goal is to remove that and support `n` levels of depth filters.
+For filters, the limitation here is that Notion only supports up to `2 depth` levels of nested filters. Our goal is to remove that and support `n` levels of depth filters.
+
+Example from Notion:
+
+<img src='./public/github-assets/notion-filter.png' alt='notion-filter-view' />
 
 This is how the current version looks like:
 
