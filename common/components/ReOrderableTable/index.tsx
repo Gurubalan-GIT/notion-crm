@@ -1,10 +1,11 @@
 import { Dispatch, RootState } from "@rematch-notion/store";
 import { Table } from "antd";
+import { FunctionComponent } from "react";
 import ReactDragListView from "react-drag-listview";
 import { useDispatch, useSelector } from "react-redux";
 import ResizableTitle from "../ResizableTitle";
 
-const ReOrderableTable = () => {
+const ReOrderableTable: FunctionComponent<{}> = () => {
   const { columns, dataSource } = useSelector(
     (state: RootState) => state.filteredTableData
   );

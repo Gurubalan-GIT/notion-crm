@@ -1,11 +1,16 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { CustomPageObjectResponse, DataSourceType } from "@common/types/global";
-import { filterActions } from "@common/utils/helpers/filters";
-import { isObjectEmpty } from "@common/utils/helpers/global";
-import { filterOptionsHashMap } from "@common/utils/helpers/memoizers";
-import { Button, Col, Input, Select, Space } from "antd";
+import { isEmptyValue, isObjectEmpty } from "@common/utils/helpers/global";
+import {
+  filterActions,
+  filterConditionsActionHashMap,
+  filterOptionsHashMap,
+} from "@common/utils/helpers/hashmaps";
+import { Col, DatePicker, Input, InputNumber, Select, Space } from "antd";
 import { ColumnsType } from "antd/es/table";
-import { useState } from "react";
+import dayjs from "dayjs";
+import NestedFilterLayout from "layouts/NestedFilterLayout";
+import { FunctionComponent, useEffect, useState } from "react";
 const { Option } = Select;
 
 type Props = {
@@ -17,16 +22,34 @@ type Props = {
   compoundFilterKey?: string;
 };
 
-const NestedFilters = ({
-  filters,
-  columns,
-  depth = 0,
-  pathIndex = 0,
-  handleChange,
-  compoundFilterKey = filters?.and ? "and" : filters?.or ? "or" : "",
-}: Props) => {
+const NestedFilters: FunctionComponent<Props> = (props) => {
+  const {
+    filters,
+    columns,
+    depth = 0,
+    pathIndex = 0,
+    handleChange,
+    compoundFilterKey = filters?.and ? "and" : filters?.or ? "or" : "",
+  } = props;
   const [columnValue, setColumnValue] = useState(filters?.property);
   const [filterCondition, setFilterCondition] = useState<null | string>(null);
+
+  useEffect(() => {
+    if (filters?.property) {
+      setColumnValue(filters?.property);
+    }
+  }, [filters?.property]);
+
+  useEffect(() => {
+    if (columnValue) {
+      const filterType = (columns as any)?.find(
+        (column: any) => column.dataIndex === columnValue
+      )?.type;
+      setFilterCondition(
+        Object.keys(filterConditionsActionHashMap[filterType])[0]
+      );
+    }
+  }, [columnValue, columns]);
 
   const handleAddFilter = (isGroupFilter: boolean = false) => {
     const commonNewFilter = {
@@ -48,7 +71,7 @@ const NestedFilters = ({
     );
   };
 
-  const handleChangeCompositionFilter = (value: string) => {
+  const handleChangeCompositionFilter = () => {
     handleChange(
       depth,
       pathIndex,
@@ -83,63 +106,45 @@ const NestedFilters = ({
     }
   };
 
-  // TODO: Improve with Composition, wrap common logic in layout for the below
-
   if (filters?.and) {
     return !!filters.and.length ? (
-      <Space>
-        {renderCompoundType()}
-        <div className="p-[10px] pl-[20px] m-[10px] flex flex-col rounded-sm border-[1px] border-solid border-gray-200 bg-gray-50 shadow-sm shadow-gray-200">
-          {filters.and.map((filter: any, filterIndex: number) => (
-            <NestedFilters
-              key={filterIndex.toString() + depth}
-              columns={columns}
-              filters={filter}
-              depth={depth + 1}
-              pathIndex={filterIndex}
-              handleChange={handleChange}
-              compoundFilterKey="and"
-            />
-          ))}
-          <Space className="pt-[5px]">
-            <Button onClick={() => handleAddFilter()} size="small">
-              + Add a filter rule
-            </Button>
-            <Button onClick={() => handleAddFilter(true)} size="small">
-              + Add a filter Group
-            </Button>
-          </Space>
-        </div>
-      </Space>
+      <NestedFilterLayout
+        renderCompoundType={renderCompoundType}
+        handleAddFilter={handleAddFilter}
+      >
+        {filters.and.map((filter: any, filterIndex: number) => (
+          <NestedFilters
+            key={filterIndex + depth}
+            columns={columns}
+            filters={filter}
+            depth={depth + 1}
+            pathIndex={filterIndex}
+            handleChange={handleChange}
+            compoundFilterKey="and"
+          />
+        ))}
+      </NestedFilterLayout>
     ) : null;
   }
 
   if (filters?.or) {
     return !!filters.or.length ? (
-      <Space>
-        {renderCompoundType()}
-        <div className="p-[10px] pl-[20px] m-[10px] flex flex-col rounded-sm border-[1px] border-solid border-gray-200 bg-gray-50 shadow-sm shadow-gray-200">
-          {filters.or.map((filter: any, filterIndex: number) => (
-            <NestedFilters
-              key={filterIndex.toString() + depth}
-              columns={columns}
-              filters={filter}
-              depth={depth + 1}
-              pathIndex={filterIndex}
-              handleChange={handleChange}
-              compoundFilterKey="or"
-            />
-          ))}
-          <Space className="pt-[5px]">
-            <Button onClick={() => handleAddFilter()} size="small">
-              + Add a filter rule
-            </Button>
-            <Button onClick={() => handleAddFilter(true)} size="small">
-              + Add a filter Group
-            </Button>
-          </Space>
-        </div>
-      </Space>
+      <NestedFilterLayout
+        renderCompoundType={renderCompoundType}
+        handleAddFilter={handleAddFilter}
+      >
+        {filters.or.map((filter: any, filterIndex: number) => (
+          <NestedFilters
+            key={filterIndex + depth}
+            columns={columns}
+            filters={filter}
+            depth={depth + 1}
+            pathIndex={filterIndex}
+            handleChange={handleChange}
+            compoundFilterKey="or"
+          />
+        ))}
+      </NestedFilterLayout>
     ) : null;
   }
 
@@ -149,18 +154,14 @@ const NestedFilters = ({
     (column: any) => column.dataIndex === columnValue
   )?.type;
 
-  const defaultFilterCondition = filterType
-    ? filterCondition ?? Object.keys(filterOptionsHashMap[filterType])[0]
-    : null;
-
-  const handleInputChange = (value: string) => {
+  const handleInputChange = (value: any) => {
     handleChange(
       depth,
       pathIndex,
       {
         property: columnValue,
         [filterType]: {
-          [defaultFilterCondition!]: value,
+          [filterCondition!]: value,
         },
       },
       filterActions.UPDATE,
@@ -169,17 +170,76 @@ const NestedFilters = ({
   };
 
   const renderInputByType = (type: CustomPageObjectResponse["type"]) => {
+    const value = filters?.[type]?.[filterCondition!];
     switch (type) {
       case "title":
+      case "rich_text":
       case "select":
+      case "status":
         return (
           <Input
             size="small"
             onChange={(e) => handleInputChange(e.target.value)}
-            value={
-              filters?.[type]?.[filterCondition ?? defaultFilterCondition!]
+            value={value}
+          />
+        );
+      case "number":
+        return (
+          <InputNumber
+            size="small"
+            value={value}
+            onChange={(e) => handleInputChange(e.target.value)}
+          />
+        );
+      case "checkbox":
+        return (
+          <Select
+            onChange={(value) => handleInputChange(value)}
+            placeholder="Please select"
+            size="small"
+            value={value}
+          >
+            <Option key={1} value={true}>
+              Checked
+            </Option>
+            <Option key={2} value={false}>
+              Unchecked
+            </Option>
+          </Select>
+        );
+      case "date":
+      case "last_edited_time":
+        return (
+          <DatePicker
+            size="small"
+            value={dayjs(value)}
+            onChange={(value) =>
+              handleInputChange(dayjs(value).format("YYYY-MM-DD"))
             }
           />
+        );
+      case "multi_select":
+        return (
+          <Select
+            mode="multiple"
+            placeholder="Please select"
+            value={
+              isEmptyValue(value) ? [] : value?.replace(/\s/g, "").split(",")
+            }
+            size="small"
+            onChange={(value) =>
+              handleInputChange(isEmptyValue(value) ? "" : value.join(","))
+            }
+            style={{ width: 150 }}
+          >
+            {(filterOptionsHashMap as any)[columnValue]?.map(
+              (option: string, optionIndex: number) => (
+                <Option key={option + optionIndex} value={option}>
+                  {option}
+                </Option>
+              )
+            )}
+          </Select>
         );
       default:
         return <span>Unsupported Type</span>;
@@ -199,26 +259,27 @@ const NestedFilters = ({
               style={{ width: "150px" }}
             >
               {columns?.map((column: any) => (
-                <Option key={column?.key} value={column?.dataIndex}>
+                <Option key={column?.dataIndex} value={column?.dataIndex}>
                   {column?.value}
                 </Option>
               ))}
             </Select>
             <Select
               size="small"
-              value={filterCondition ?? defaultFilterCondition}
+              value={filterCondition}
               onChange={(value) => setFilterCondition(value)}
             >
-              {filterType &&
-                Object.keys(filterOptionsHashMap[filterType]).map(
-                  (condition: string, conditionIndex: number) => (
-                    <Option key={conditionIndex} value={condition}>
-                      {condition}
-                    </Option>
-                  )
-                )}
+              {Object.keys(filterConditionsActionHashMap[filterType]).map(
+                (condition: string, conditionIndex: number) => (
+                  <Option key={conditionIndex} value={condition}>
+                    {condition.replaceAll("_", " ")}
+                  </Option>
+                )
+              )}
             </Select>
-            {filterType &&
+            {!(
+              filterCondition == "is_empty" || filterCondition == "is_not_empty"
+            ) &&
               renderInputByType(filterType as CustomPageObjectResponse["type"])}
           </Space>
         </Col>

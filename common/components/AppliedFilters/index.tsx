@@ -1,9 +1,10 @@
 import { getNestedUpdate } from "@common/utils/helpers/filters";
 import { Dispatch, RootState } from "@rematch-notion/store";
+import { FunctionComponent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import NestedFilters from "./NestedFilters";
 
-const AppliedFilters = () => {
+const AppliedFilters: FunctionComponent<{}> = () => {
   const { columns } = useSelector(
     (state: RootState) => state.filteredTableData
   );
@@ -23,14 +24,6 @@ const AppliedFilters = () => {
     action: string,
     compoundFilterKey: string
   ) => {
-    console.log(
-      structuredClone(filters),
-      depth,
-      pathIndex,
-      value,
-      action,
-      compoundFilterKey
-    );
     dispatch.tableDataOrganizers.setFilters(
       getNestedUpdate(
         structuredClone(filters),
