@@ -33,7 +33,7 @@ Ant Design is used here as the design system. **This is utilized strictly only f
 
 ### Bugs
 
-As of now, there are bugs amd these can be referenced under [Issues](https://github.com/Gurubalan-GIT/notion-crm/issues). This is still a work in progress, please feel free to create issue tickets for unraised bugs.
+As of now, there are bugs and these can be referenced under [Issues](https://github.com/Gurubalan-GIT/notion-crm/issues). This is still a work in progress, please feel free to create issue tickets for unraised bugs.
 
 ## Codebase Quality Control
 - Pre-commit hooks via Husky.
