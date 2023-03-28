@@ -38,7 +38,7 @@ As of now, there are bugs and these can be referenced under [Issues](https://git
 ## Codebase Quality Control
 - Pre-commit hooks via Husky.
   - This uses prettier and eslint configs together to setup linting when commiting.
-- Github linters for automated commit annotations via [Github actions](https://github.com/Gurubalan-GIT/netbook-social/blob/main/.github/workflows/linter.yml).
+- Github linters for automated commit annotations via [Github actions](https://github.com/Gurubalan-GIT/notion-crm/blob/main/.github/workflows/linter.yml).
   - This runs a linter action based on the prettier and eslint configs in the respective PR and lints the PR for a status check.
   
 
