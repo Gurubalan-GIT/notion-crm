@@ -59,6 +59,8 @@ const Home: FunctionComponent<Props> = () => {
     tableDataOrganizers.sorts,
   ]);
 
+  console.log(filters);
+
   useEffect(() => {
     dispatch.filteredTableData.setFilteredTableDataSource(updatedDataSource);
   }, [dispatch.filteredTableData, updatedDataSource]);

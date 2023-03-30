@@ -188,33 +188,22 @@ const NestedFilters: FunctionComponent<Props> = (props) => {
 
   const handleFilterConditionChange = (value: any) => {
     setFilterCondition(value);
-    if (value === IS_EMPTY_FILTER || value === IS_NOT_EMPTY_FILTER) {
-      handleChange(
-        depth,
-        pathIndex,
-        {
-          property: columnValue,
-          [filterType]: {
-            [value]: "",
-          },
+
+    handleChange(
+      depth,
+      pathIndex,
+      {
+        property: columnValue,
+        [filterType]: {
+          [value]:
+            value === IS_EMPTY_FILTER || value === IS_NOT_EMPTY_FILTER
+              ? ""
+              : inputValue,
         },
-        filterActions.UPDATE,
-        compoundFilterKey
-      );
-    } else {
-      handleChange(
-        depth,
-        pathIndex,
-        {
-          property: columnValue,
-          [filterType]: {
-            [value]: inputValue,
-          },
-        },
-        filterActions.UPDATE,
-        compoundFilterKey
-      );
-    }
+      },
+      filterActions.UPDATE,
+      compoundFilterKey
+    );
   };
 
   const renderInputByType = (type: CustomPageObjectResponse["type"]) => {
