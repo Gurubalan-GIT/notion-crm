@@ -1,6 +1,6 @@
-## [Notion View](https://notion-crm-view.vercel.app/)
+## [Notion CRM](https://notion-crm-view.vercel.app/)
 
-A Notion view that can render data from a Notion Database and perform complex functions extending Notion's out of the box features such as compound filters and sorting.
+A CRM that can render data from a Notion Database and perform complex functions extending Notion's out-of-the-box features such as compound filters and sorting.
 
 ## Installation
 
